@@ -1,110 +1,16 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-	<title>GenClock</title>
-	<meta charset="UFT-8"/>
-	<style>
-		*,html,body {
-			box-sizing: content-box;
-			margin: 0;
-			padding: 0;
-			border: 0;
-		}
-		html,body {
-			width: 100%;
-			height: 100%;
-			background: #eef;
-		}
-		.clock{
-			font-size: 80px;
-			font-family: Fixedsys;
-			position: absolute;
-			top: 50%; left: 50%;
-			transform: translate(-50%,-50%);
-		}
-	</style>
+	<title>The Clock</title>
+	<meta charset="UFT-8">
+	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<div class="clock">
-	<span class="clock__hour"></span>:
-	<span class="clock__min"></span>:
-	<span class="clock__sec"></span>
-</div>
-<script>
-
-let time = new Date();
-let h = time.getHours();
-let m = time.getMinutes();
-let s = time.getSeconds();
-
-const clock__hour = document.querySelector(".clock__hour");
-const clock__min = document.querySelector(".clock__min");
-const clock__sec = document.querySelector(".clock__sec");
-
-clock__hour.innerText = h.toString().padStart(2,"0");
-clock__min.innerText = m.toString().padStart(2,"0");
-clock__sec.innerText = s.toString().padStart(2,"0");
-
-var getSec = (function(){
-	function *gen(){
-		let sec = s;
-		while(true){
-			yield sec++;
-			if (sec>59){
-				sec=0;
-				getMin();
-			}
-		}
-	}
-	var theGen = gen();
-	function secGen(){
-		clock__sec.innerText = theGen.next().value.toString().padStart(2,"0");
-	}
-	secGen();
-	return secGen;
-})();
-
-var getMin = (function(){
-	function *gen(){
-		let min = m;
-		while(true){
-			yield min++;
-			if (min>59){
-				min=0;
-				getHour();
-			}
-		}
-	}
-	var theGen = gen();
-	function minGen(){
-		clock__min.innerText = theGen.next().value.toString().padStart(2,"0");
-	}
-	minGen();
-	return minGen;
-})();
-
-var getHour = (function(){
-	function *gen(){
-		let hour = h;
-		while(true){
-			yield hour++;
-			if (hour>23){
-				hour=0;
-			}
-		}
-	}
-	var theGen = gen();
-	function hourGen(){
-		clock__hour.innerText = theGen.next().value.toString().padStart(2,"0");
-	}
-	hourGen();
-	return hourGen;
-})();
-
-setInterval(
-	()=>getSec()
-,1000);
-
-</script>
+	<div class="clock">
+		<span class="clock__hour"></span>:
+		<span class="clock__min"></span>:
+		<span class="clock__sec"></span>
+	</div>
+<script src="script.js"></script>
 </body>
 </html>
