@@ -1,65 +1,31 @@
-﻿let time = new Date();
-let h = time.getHours();
-let m = time.getMinutes();
-let s = time.getSeconds();
+﻿const getEmptyFn = () => () => {};
+const emptyFn = getEmptyFn();
 
-const clock__hour = document.querySelector(".clock__hour");
-const clock__min = document.querySelector(".clock__min");
-const clock__sec = document.querySelector(".clock__sec");
-
-const getSec = (function(){
+function getValUpdater(start, treshhold, place, fn){
 	var iterator = (function*(){
-		let sec = s;
+		let val = start;
 		while(true){
-			yield sec++;
-			if (sec>59){
-				sec=0;
-				getMin();
+			yield val++;
+			if (val >= treshhold){
+				val = 0;
+				fn();
 			}
 		}
 	})();
-	function secGen(){
-		clock__sec.innerText = iterator.next().value.toString().padStart(2,"0");
+	function updateUnit(){
+		document.querySelector(place).innerText = iterator.next().value.toString().padStart(2,"0");
 	}
-	secGen();
-	return secGen;
-})();
+	updateUnit();
+	return updateUnit;
+}
 
-const getMin = (function(){
-	var iterator = (function*(){
-		let min = m;
-		while(true){
-			yield min++;
-			if (min > 59){
-				min = 0;
-				getHour();
-			}
-		}
-	})();
-	function minGen(){
-		clock__min.innerText = iterator.next().value.toString().padStart(2,"0");
-	}
-	minGen();
-	return minGen;
-})();
+let time = new Date(),
+	h = time.getHours(),
+	m = time.getMinutes(),
+	s = time.getSeconds();
 
-const getHour = (function(){
-	var iterator = (function*(){
-		let hour = h;
-		while(true){
-			yield hour++;
-			if (hour > 23){
-				hour = 0;
-			}
-		}
-	})();
-	function hourGen(){
-		clock__hour.innerText = iterator.next().value.toString().padStart(2,"0");
-	}
-	hourGen();
-	return hourGen;
-})();
+const getHour = getValUpdater(h, 24, ".clock__hour", emptyFn);
+const getMin = getValUpdater(m, 60, ".clock__min", getHour);
+const getSec = getValUpdater(s, 60, ".clock__sec", getMin);
 
-setInterval(
-	()=>getSec()
-,1000);
+var mainInterval = setInterval(getSec,1000);
