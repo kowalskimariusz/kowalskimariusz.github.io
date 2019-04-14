@@ -1,5 +1,4 @@
-﻿const getEmptyFn = () => () => {};
-const emptyFn = getEmptyFn();
+﻿const emptyFn = () => {};
 
 function getValUpdater(start, treshhold, place, fn){
 	var iterator = (function*(){
@@ -24,8 +23,13 @@ let time = new Date(),
 	m = time.getMinutes(),
 	s = time.getSeconds();
 
-const getHour = getValUpdater(h, 24, ".clock__hour", emptyFn);
-const getMin = getValUpdater(m, 60, ".clock__min", getHour);
-const getSec = getValUpdater(s, 60, ".clock__sec", getMin);
+const updateHour = getValUpdater(h, 24, ".clock__hour", emptyFn);
+const updateMin = getValUpdater(m, 60, ".clock__min", updateHour);
+const updateSec = getValUpdater(s, 60, ".clock__sec", updateMin);
 
-var mainInterval = setInterval(getSec,1000);
+var interval = 1000;
+
+(function updateTime(){
+	updateSec();
+	setTimeout(updateTime, interval);
+})();
